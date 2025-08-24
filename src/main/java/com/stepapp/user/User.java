@@ -33,15 +33,30 @@ public class User {
     @Column(name = "avatar_url", length = 500)
     private String avatarUrl;
 
+    // ✅ Lombok Builder.Default гарантирует дефолт даже при использовании Builder
+    @Builder.Default
     @Column(nullable = false, length = 50)
     private String timezone = "UTC";
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private OffsetDateTime createdAt = OffsetDateTime.now();
+    private OffsetDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
-    private OffsetDateTime updatedAt = OffsetDateTime.now();
+    private OffsetDateTime updatedAt;
 
     @Column(name = "last_login_at")
     private OffsetDateTime lastLoginAt;
+
+    // ✅ автоматическая установка дат и дефолтов
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) createdAt = OffsetDateTime.now();
+        if (updatedAt == null) updatedAt = OffsetDateTime.now();
+        if (timezone == null) timezone = "UTC";
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = OffsetDateTime.now();
+    }
 }
