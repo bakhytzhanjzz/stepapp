@@ -20,6 +20,7 @@ public class GroupService {
     private final GroupInvitationRepository invitationRepo;
     private final UserService userService;
 
+    // --- Создание группы ---
     @Transactional
     public GroupDto createGroup(String ownerUsername, String name, String description, boolean isPrivate) {
         User owner = userService.getByUsernameOrThrow(ownerUsername);
@@ -41,6 +42,7 @@ public class GroupService {
         return GroupDto.from(group);
     }
 
+    // --- Приглашение пользователя в группу ---
     @Transactional
     public GroupInvitationDto inviteUser(Long groupId, String inviterUsername, String invitedUsername) {
         Group group = groupRepo.findById(groupId)
@@ -65,6 +67,7 @@ public class GroupService {
         return GroupInvitationDto.from(gi);
     }
 
+    // --- Ответ на приглашение ---
     @Transactional
     public GroupInvitationDto respondToInvite(Long inviteId, String invitedUsername, boolean accept) {
         GroupInvitation gi = invitationRepo.findById(inviteId)
@@ -88,6 +91,18 @@ public class GroupService {
         return GroupInvitationDto.from(gi);
     }
 
+    // --- Получение всех активных приглашений пользователя ---
+    @Transactional(readOnly = true)
+    public List<GroupInvitationDto> listPendingInvitations(String username) {
+        User user = userService.getByUsernameOrThrow(username);
+
+        return invitationRepo.findAllByInvitedAndStatus(user, GroupInvitation.Status.INVITED)
+                .stream()
+                .map(GroupInvitationDto::from)
+                .toList();
+    }
+
+    // --- Получение групп пользователя ---
     @Transactional(readOnly = true)
     public List<GroupDto> listUserGroups(String username) {
         User u = userService.getByUsernameOrThrow(username);
@@ -96,6 +111,7 @@ public class GroupService {
                 .toList();
     }
 
+    // --- Покинуть группу ---
     @Transactional
     public void leaveGroup(Long groupId, String username) {
         Group group = groupRepo.findById(groupId)
@@ -112,6 +128,7 @@ public class GroupService {
         memberRepo.delete(gm);
     }
 
+    // --- Удалить группу ---
     @Transactional
     public void deleteGroup(Long groupId, String username) {
         Group group = groupRepo.findById(groupId)
