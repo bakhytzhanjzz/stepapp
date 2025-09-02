@@ -3,9 +3,9 @@ spring:
     name: stepapp
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/stepapp
-    username: postgres
-    password: 1234
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
