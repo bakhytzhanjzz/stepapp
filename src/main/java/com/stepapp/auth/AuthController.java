@@ -30,4 +30,10 @@ public class AuthController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
+
+    @PostMapping("/google")
+    public ResponseEntity<LoginResponse> googleLogin(@RequestBody GoogleLoginRequest request) {
+        return ResponseEntity.ok(authService.loginWithGoogle(request.idToken()));
+    }
+
 }

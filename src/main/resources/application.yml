@@ -28,3 +28,6 @@ security:
   jwt:
     secret: "c608517eaa35c687d35746a3f8d5b555"
     expiration-ms: 3600000
+
+google:
+  client-id: "770389256164-f6scepnb1b1iga135ckm6bckrp5guctd.apps.googleusercontent.com"
