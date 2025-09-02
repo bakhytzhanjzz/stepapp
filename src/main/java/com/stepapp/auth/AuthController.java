@@ -1,11 +1,9 @@
 package com.stepapp.auth;
 
-import com.stepapp.auth.dto.LoginRequest;
-import com.stepapp.auth.dto.LoginResponse;
-import com.stepapp.auth.dto.RegisterRequest;
-import com.stepapp.auth.dto.RegisterResponse;
+import com.stepapp.auth.dto.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,4 +24,10 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request));
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<LoginResponse> refresh(@RequestBody RefreshTokenRequest request) {
+        return authService.refreshToken(request.refreshToken())
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+    }
 }
